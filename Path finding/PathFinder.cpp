@@ -15,7 +15,7 @@ AStar::AStar( Square *PointA ,  Square *PointB ,  Matrix *_Matrix)
 }
 
 
-void AStar::init()
+void AStar::init()  // init
 {
     OpenList.push(**StartSq);
     (**StartSq).fCost =0;
