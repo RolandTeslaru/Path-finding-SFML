@@ -21,10 +21,10 @@ class AStar
 private:
     
 public:
-    Square **StartSq;
-    Square **FinishSq;
+    Square *StartSq;
+    Square *FinishSq;
 
-    Matrix **MainMatrix;
+    Matrix *MainMatrix;
     stack<Square> OpenList;
     stack<Square> ClosedList;
     

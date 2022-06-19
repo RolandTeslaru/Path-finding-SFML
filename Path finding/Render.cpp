@@ -8,6 +8,7 @@
 #include "GlobalValue.h"
 #include "Matrix.hpp"
 #include "input.hpp"
+#include "PathFinder.hpp"
 using namespace sf;
 using namespace std;
  
@@ -57,6 +58,7 @@ int happening = 0;
 
 void render(Square MainSquare[][100] , Matrix *MainMatrix)
 {
+    AStar(&PointA , &PointB , MainMatrix);
     sf::RectangleShape block(Vector2f(WinX / MainMatrix -> Mat_J - 2 , WinY / MainMatrix -> Mat_I - 2 ));
 
     while(window.isOpen())
