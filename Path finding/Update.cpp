@@ -13,9 +13,3 @@
 
 using namespace std;
 using namespace sf;
-
-
-void update()
-{
-    
-}

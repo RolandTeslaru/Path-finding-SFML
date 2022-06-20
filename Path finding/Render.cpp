@@ -30,12 +30,14 @@ int inputmode;
 
 void initwindow()
 {
+    //------ initializer starting and finish squares
     PointA.poz = Vector2i(-1 , -1);
     PointB.poz = Vector2i(-1 , -1);
     
     window.clear(Color::Black);
     window.setFramerateLimit(60);
     
+    //------ Load fonts
     if(!font.loadFromFile("Resources/font.ttf") ||
        !Menlo.loadFromFile("Resources/Menlo-Regular.ttf"))
     {
@@ -43,6 +45,8 @@ void initwindow()
         
         exit(EXIT_FAILURE);
     }
+    
+    // ----- Set Text ------ //
     TXTpoint.setFont(font);
     TXTpoint.setScale(1, 1);
     TXTpoint.setPosition(Vector2f(0, WinY ));
@@ -54,11 +58,12 @@ void initwindow()
     TXTCredits.setFillColor(Color::White);
     TXTCredits.setCharacterSize(20);
 }
-int happening = 0;
+
+bool ended = false;
 
 void render(Square MainSquare[][100] , Matrix *MainMatrix)
 {
-    AStar(&PointA , &PointB , MainMatrix);
+    AStar MainAlg(&PointA , &PointB , MainMatrix);
     sf::RectangleShape block(Vector2f(WinX / MainMatrix -> Mat_J - 2 , WinY / MainMatrix -> Mat_I - 2 ));
 
     while(window.isOpen())
@@ -91,11 +96,12 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                         if(MainMouse.isButtonPressed(sf::Mouse::Left))
                         {
                             //------ Select starting square
-                            if(PointA.poz == Vector2i(-1 , -1))
+                            if(PointA.poz == Vector2i(-1 , -1)) // if the position is (-1 , -1) it means that it does not EXIST
                             {
                                 PointA.poz = Vector2i(i,j);
                                 MainSquare[i][j].sqColor = Color::Blue;
                                 MainMatrix -> Mat[i][j] = 2;
+                                MainSquare[i][j].id = 2;
                             }
                             //------ Select Finishing Sqaure
                             else if(PointA.poz != Vector2i(-1 , -1) &&
@@ -104,6 +110,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                                 PointB.poz = Vector2i(i,j);
                                 MainSquare[i][j].sqColor = Color::Red;
                                 MainMatrix -> Mat[i][j] = 3;
+                                MainSquare[i][j].id = 3;
                             }
                             //------ Select barrier blocks
                             else if(PointA.poz != Vector2i(-1 , -1) &&
@@ -112,6 +119,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                             {
                                 MainMatrix -> Mat[i][j] = 1;
                                 MainSquare[i][j].sqColor = Color::Black;
+                                MainSquare[i][j].id = 1;
                             }
                         }
                         
@@ -122,6 +130,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                             {
                                 MainMatrix -> Mat[i][j] = 0;
                                 MainSquare[i][j].sqColor = Color::White;
+                                MainSquare[i][j].id = 0;
                             }
                         }
                         
@@ -175,9 +184,15 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                && PointB.poz != Vector2i(-1 , -1))
             {
                 ready = true;
+                if(!ended)
+                {
+                    MainAlg.init();
+                    MainAlg.Alg(MainSquare);
+                    ended = true;
+                }
             }
         }
-        // ---------DRAW Everything (besides the squares 😄)---------
+        // ---------DRAW Everything (besides the squares )---------
         window.draw(TXTpoint);
         window.draw(TXTCredits);
         window.display();

@@ -25,8 +25,7 @@ public:
     Square *FinishSq;
 
     Matrix *MainMatrix;
-    stack<Square> OpenList;
-    stack<Square> ClosedList;
+    set<Square> OpenList;
     
     AStar( Square *PointA ,  Square *PointB ,  Matrix *_Matrix);
     
@@ -34,12 +33,16 @@ public:
     
     bool foundDest = false;
         
-    bool isSqValid(Square *currentSq );
+    bool isSqValid(Square testSq );
     bool finished(Square *currentSq );
+    bool isDestionation(Square *currentSq);
+    bool isAvailable(Square *testSq);
     
     void init();
     
     Square currentNode;
+    
+    Square createSq(Vector2i poz);
     
     double herusitic(Square *currentSq , string type);
     double EUdistance(Square *currentSq );
@@ -47,19 +50,6 @@ public:
     double DiagonalDistance(Square *currentSq);
     
     void Alg(Square MainSquare[100][100]);
-};
-
-class Node
-{
-    struct sqNode
-    {
-        bool Obstacle;
-    };
-    
-    
-    
-    friend class Matrix;
-    friend class Square;
 };
 
 #endif /* PathFinder_hpp */

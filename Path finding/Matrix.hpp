@@ -28,6 +28,7 @@ public:
     
     Square *parent;
     
+    int id = 0;
 };
 
 class Matrix
