@@ -31,14 +31,14 @@ public:
     
     ~AStar();
     
-    bool foundDest = false;
+    bool foundDest = false; 
         
-    bool isSqValid(Square testSq );
+    bool isSqValid(Square *testSq );
     bool finished(Square *currentSq );
     bool isDestionation(Square *currentSq);
     bool isAvailable(Square *testSq);
     
-    void init();
+    void init(Square MainSquare[100][100]);
     
     Square currentNode;
     

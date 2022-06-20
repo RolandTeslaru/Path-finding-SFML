@@ -98,16 +98,18 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                             //------ Select starting square
                             if(PointA.poz == Vector2i(-1 , -1)) // if the position is (-1 , -1) it means that it does not EXIST
                             {
-                                PointA.poz = Vector2i(i,j);
+                                PointA.poz = Vector2i(j,i);
                                 MainSquare[i][j].sqColor = Color::Blue;
                                 MainMatrix -> Mat[i][j] = 2;
                                 MainSquare[i][j].id = 2;
+                                
                             }
                             //------ Select Finishing Sqaure
                             else if(PointA.poz != Vector2i(-1 , -1) &&
-                                    PointB.poz == Vector2i(-1 , -1))
+                                    PointB.poz == Vector2i(-1 , -1) &&
+                                    Vector2i(j,i) != PointA.poz)
                             {
-                                PointB.poz = Vector2i(i,j);
+                                PointB.poz = Vector2i(j,i);
                                 MainSquare[i][j].sqColor = Color::Red;
                                 MainMatrix -> Mat[i][j] = 3;
                                 MainSquare[i][j].id = 3;
@@ -186,7 +188,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                 ready = true;
                 if(!ended)
                 {
-                    MainAlg.init();
+                    MainAlg.init(MainSquare);
                     MainAlg.Alg(MainSquare);
                     ended = true;
                 }

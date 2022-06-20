@@ -23,24 +23,34 @@ AStar::AStar( Square *PointA ,  Square *PointB ,  Matrix *_Matrix)
 
 AStar::~AStar(){}
 
-void AStar::init()
+void AStar::init(Square MainSquare[100][100])
 {
+    for(int i = 1 ; i<= MainMatrix -> Mat_I ; i++)
+    {
+        for(int j = 1 ; j<= MainMatrix -> Mat_J ; j++)
+        {
+            MainSquare[i][j].fCost = FLT_MAX;
+            MainSquare[i][j].hCost = FLT_MAX;
+            MainSquare[i][j].gCost = FLT_MAX;
+            MainSquare[i][j].ParentPoz.y = -1;
+            MainSquare[i][j].ParentPoz.x = -1;
+        }
+    }
+    
+    
+    
     StartSq -> fCost = 0.0;
     StartSq -> gCost = 0.0;
     StartSq -> hCost = 0.0;
+//    StartSq -> hCost = EUdistance(StartSq);
+//    cout << " starsw eu dsitance " << StartSq -> hCost << endl;
+//    StartSq -> fCost = StartSq -> hCost + StartSq -> gCost;
     StartSq -> ParentPoz.y = StartSq -> poz.y;
     StartSq -> ParentPoz.x = StartSq -> poz.x;
-    
+        
     OpenList.insert(*StartSq);
     
     foundDest = false;
-}
-
-Square AStar::createSq(Vector2i poz)
-{
-    Square newSq;
-    newSq.poz = poz;
-    return newSq;
 }
 
 bool AStar::finished(Square *currentSq )
@@ -68,12 +78,19 @@ bool AStar::isDestionation(Square *currentSq)
         return false;
 }
 
-bool AStar::isSqValid(Square testSq )
+bool AStar::isSqValid(Square *testSq )
 {
-    if( MainMatrix -> Mat[testSq.poz.y][testSq.poz.x] == 0 )
+    cout << "isSqValid : " << endl;
+    cout << testSq -> poz.y  << " " << testSq -> poz.x << endl;
+    cout << MainMatrix -> Mat[testSq->poz.y][testSq->poz.x] << endl;
+    if( MainMatrix -> Mat[testSq->poz.y][testSq->poz.x] == 0 )
         return true;
     else
         return false;
+//    if(testSq -> sqColor == Color::White)
+//        return true;
+//    else
+//        return false;
 }
 
 double AStar::ManhattenDistance(Square *currentSq)
@@ -113,12 +130,13 @@ void AStar::Alg(Square MainSquare[100][100])
     bool ClosedList[MainMatrix -> Mat_I][MainMatrix -> Mat_J];
     memset(ClosedList, false, sizeof(ClosedList));
         
-    if(isSqValid(*StartSq) == false)
-    {
-        cout << " Source is invalid " << endl;
-        return ;
-    }
-    
+//    if(isSqValid(StartSq) == false)
+//    {
+//        cout << "Start Sq   " <<   StartSq -> poz.y << "   " << StartSq -> poz.x << endl;
+//        cout << " Source is invalid " << endl;
+//        return ;
+//    }
+
     
     if(isAvailable(StartSq) == false ||
        isAvailable(StartSq) == false)
@@ -130,40 +148,27 @@ void AStar::Alg(Square MainSquare[100][100])
     
     if(isDestionation(StartSq) == true)
     {
-        cout << "We are alreadya t the destination " << endl;
+        cout << "We are alreadya at the destination " << endl;
         return ;
     }
     
     
     while(!OpenList.empty())
     {
-        cout << " HELLO ? OPEN LIST . EXMPTY" << endl;
-        Square currentSq = *OpenList.begin();
         
-        Square P_currentSq = currentSq;
+        Square currentSq = *OpenList.begin();
+
         OpenList.erase(OpenList.begin());
 
         int i = currentSq.poz.y;
         int j = currentSq.poz.x;
+        
         ClosedList[i][j] = true;
 
         double gNew , hNew , fNew;
-
-        P_currentSq.poz = Vector2i(j , i-1);
         
-        
-        
-//        for(int i = 1 ; i<= MainMatrix -> Mat_I ; i++)
-//        {
-//            for(int j = 1 ; j<= MainMatrix -> Mat_J ; j++)
-//            {
-//                cout << MainMatrix -> Mat[i][j] << " ";
-//            }
-//            cout << endl;
-//        }
-//
         // ------- S U C C E S O R     1  (N) -------- //   I - 1
-        if(isSqValid(MainSquare[i-1][j]))
+        if(isSqValid( &MainSquare[i-1][j]))
         {
             if(isDestionation( &MainSquare[i-1][j]) == true)
             {
@@ -177,14 +182,16 @@ void AStar::Alg(Square MainSquare[100][100])
             else if(ClosedList[i-1][j] == false &&
                     isAvailable(&MainSquare[i-1][j]) == true)
             {
-                cout << " this should be true " << endl;
                 gNew = MainSquare[i][j].gCost;
                 hNew = EUdistance(&MainSquare[i-1][j]);
                 fNew = gNew + hNew;
                 
+                cout << "fcost for selected sq : " <<  MainSquare[i-1][j].fCost<< endl;
+                
                 if(MainSquare[i-1][j].fCost == FLT_MAX ||
                    MainSquare[i-1][j].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i-1][j]);
                     MainSquare[i-1][j].fCost = fNew;
                     MainSquare[i-1][j].gCost = gNew;
@@ -194,9 +201,8 @@ void AStar::Alg(Square MainSquare[100][100])
                 }
             }
         }
-        
         // ------- S U C C E S O R     2 (S)-------- //    I + 1
-        if(isSqValid(MainSquare[i+1][j]))
+        if(isSqValid( &MainSquare[i+1][j]))
         {
             if(isDestionation( &MainSquare[i+1][j]) == true)
             {
@@ -216,6 +222,7 @@ void AStar::Alg(Square MainSquare[100][100])
                 if(MainSquare[i+1][j].fCost == FLT_MAX ||
                    MainSquare[i+1][j].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i-1][j]);
                     MainSquare[i-1][j].fCost = fNew;
                     MainSquare[i-1][j].gCost = gNew;
@@ -226,7 +233,7 @@ void AStar::Alg(Square MainSquare[100][100])
             }
         }
         // ------- S U C C E S O R     3 (E)-------- //        J + 1
-        if(isSqValid(MainSquare[i][j+1]))
+        if(isSqValid( &MainSquare[i][j+1]))
         {
             if(isDestionation( &MainSquare[i][j+1]) == true)
             {
@@ -246,6 +253,7 @@ void AStar::Alg(Square MainSquare[100][100])
                 if(MainSquare[i][j+1].fCost == FLT_MAX ||
                    MainSquare[i][j+1].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i][j+1]);
                     MainSquare[i][j+1].fCost = fNew;
                     MainSquare[i][j+1].gCost = gNew;
@@ -256,7 +264,9 @@ void AStar::Alg(Square MainSquare[100][100])
             }
         }
         // ------- S U C C E S O R     4 (W)-------- //     J - 1
-        if(isSqValid(MainSquare[i][j-1]))
+        cout << " MainSquare[i][j] " << " ";
+        cout << MainSquare[i][j].poz.y << " " << MainSquare[i][j].poz.x << endl;
+        if(isSqValid( &MainSquare[i][j-1]))
         {
             if(isDestionation( &MainSquare[i][j-1]) == true)
             {
@@ -276,6 +286,7 @@ void AStar::Alg(Square MainSquare[100][100])
                 if(MainSquare[i][j-1].fCost == FLT_MAX ||
                    MainSquare[i][j-1].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i][j-1]);
                     MainSquare[i][j-1].fCost = fNew;
                     MainSquare[i][j-1].gCost = gNew;
@@ -287,7 +298,7 @@ void AStar::Alg(Square MainSquare[100][100])
         }
         
         // ------- S U C C E S O R     5 ( N-E)-------- //        I - 1    J + 1
-        if(isSqValid(MainSquare[i-1][j+1]))
+        if(isSqValid( &MainSquare[i-1][j+1]))
         {
             if(isDestionation( &MainSquare[i-1][j+1]) == true)
             {
@@ -307,6 +318,7 @@ void AStar::Alg(Square MainSquare[100][100])
                 if(MainSquare[i-1][j+1].fCost == FLT_MAX ||
                    MainSquare[i-1][j+1].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i][j+1]);
                     MainSquare[i-1][j+1].fCost = fNew;
                     MainSquare[i-1][j+1].gCost = gNew;
@@ -317,7 +329,7 @@ void AStar::Alg(Square MainSquare[100][100])
             }
         }
         // ------- S U C C E S O R     6 ( N-W)-------- //      I - 1    J - 1
-        if(isSqValid(MainSquare[i-1][j-1]))
+        if(isSqValid( &MainSquare[i-1][j-1]))
         {
             if(isDestionation( &MainSquare[i-1][j-1]) == true)
             {
@@ -334,9 +346,12 @@ void AStar::Alg(Square MainSquare[100][100])
                 hNew = EUdistance(&MainSquare[i-1][j-1]);
                 fNew = gNew + hNew;
                 
+                
+                cout << MainSquare[i-1][j-1].fCost << endl;
                 if(MainSquare[i-1][j-1].fCost == FLT_MAX ||
                    MainSquare[i-1][j-1].fCost > fNew)
                 {
+                    cout << " AAAAA" << endl;
                     OpenList.insert(MainSquare[i][j-1]);
                     MainSquare[i-1][j-1].fCost = fNew;
                     MainSquare[i-1][j-1].gCost = gNew;
@@ -348,7 +363,7 @@ void AStar::Alg(Square MainSquare[100][100])
         }
         
         // ------- S U C C E S O R     7 ( S-E )-------- //       I + 1    J + 1
-        if(isSqValid(MainSquare[i+1][j+1]))
+        if(isSqValid( &MainSquare[i+1][j+1]))
         {
             if(isDestionation( &MainSquare[i+1][j+1]) == true)
             {
@@ -379,7 +394,7 @@ void AStar::Alg(Square MainSquare[100][100])
         }
         
         // ------- S U C C E S O R     8 ( S-W )-------- //       I + 1    J - 1
-        if(isSqValid(MainSquare[i+1][j-1]))
+        if(isSqValid( &MainSquare[i+1][j-1]))
         {
             if(isDestionation( &MainSquare[i+1][j-1]) == true)
             {
@@ -408,6 +423,7 @@ void AStar::Alg(Square MainSquare[100][100])
                 }
             }
         }
+//        cout << gNew << endl << hNew << endl << fNew << endl;
     }
     if(foundDest == false)
         cout << "Could not find destination :( " << endl;
