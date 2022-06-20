@@ -24,7 +24,7 @@ public:
     Vector2i ParentPoz;
     double gCost;    // -- Distance to the start node
     double hCost;    // -- Estimated distance to the goal
-    double fCost;
+    double fCost ;
     
     Square *parent;
     

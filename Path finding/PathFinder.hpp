@@ -33,21 +33,23 @@ public:
     
     bool foundDest = false; 
         
-    bool isSqValid(Square *testSq );
-    bool finished(Square *currentSq );
-    bool isDestionation(Square *currentSq);
-    bool isAvailable(Square *testSq);
+    bool isSqValid(Square testSq );
+    bool finished(Square currentSq );
+    bool isDestionation(Square currentSq);
+    bool isAvailable(Square testSq);
     
     void init(Square MainSquare[100][100]);
+    
+    void tracepath(Square MainSquare[100][100]);
     
     Square currentNode;
     
     Square createSq(Vector2i poz);
     
-    double herusitic(Square *currentSq , string type);
-    double EUdistance(Square *currentSq );
-    double ManhattenDistance(Square *currentSq);
-    double DiagonalDistance(Square *currentSq);
+    double herusitic(Square currentSq);
+    double EUdistance(Square currentSq );
+    double ManhattenDistance(Square currentSq);
+    double DiagonalDistance(Square currentSq);
     
     void Alg(Square MainSquare[100][100]);
 };

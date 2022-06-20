@@ -186,6 +186,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                && PointB.poz != Vector2i(-1 , -1))
             {
                 ready = true;
+                MainAlg.init(MainSquare);
                 if(!ended)
                 {
                     MainAlg.init(MainSquare);
@@ -194,6 +195,7 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                 }
             }
         }
+        MainAlg.tracepath(MainSquare);
         // ---------DRAW Everything (besides the squares )---------
         window.draw(TXTpoint);
         window.draw(TXTCredits);
