@@ -8,7 +8,7 @@
 #include "PathFinder.hpp"
 #include "array"
 #include "queue"
-#include "set"
+#include "vector"
 #include "stack"
 
 
@@ -32,58 +32,47 @@ void AStar::init(Square MainSquare[100][100])
 {
     for(int i = 1 ; i<= MainMatrix -> Mat_I ; i++)
     {
-        for(int j = 1 ; j<= MainMatrix -> Mat_J ; j++)
+        for(int j = 1 ; j<= MainMatrix -> Mat_J ;j++)
         {
-            MainSquare[i][j].poz.y = i;
-            MainSquare[i][j].poz.x = j;
-            MainSquare[i][j].fCost = -1;
-            MainSquare[i][j].hCost = -1;
-            MainSquare[i][j].gCost = -1;
-            MainSquare[i][j].ParentPoz.y = -1;
-            MainSquare[i][j].ParentPoz.x = -1;
+            MainSquare[i][j].gCost = INFINITY;
+            MainSquare[i][j].hCost = INFINITY;
+            MainSquare[i][j].fCost = INFINITY;
+            MainSquare[i][j].ParentPoz = Vector2i(-1,-1);
+            MainSquare[i][j].poz = Vector2i(j,i);
+            
         }
     }
-    MainSquare[StartSq -> poz.y][StartSq -> poz.x].fCost = 0.0;
-    MainSquare[StartSq -> poz.y][StartSq -> poz.x].hCost = 0.0;
-    MainSquare[StartSq -> poz.y][StartSq -> poz.x].gCost = 0.0;
-    
-    foundDest = false;
+    int i = StartSq -> poz.y;
+    int j = StartSq -> poz.x;
+    MainSquare[i][j].fCost = 0.0;
+    MainSquare[i][j].gCost = 0.0;
+    MainSquare[i][j].hCost = 0.0;
 }
 
 void AStar::tracepath(Square MainSquare[100][100])
 {
-    stack<Square> Path;
-    int row = FinishSq -> poz.y;
-    int col = FinishSq -> poz.x;
-    Square nextnode;
-    nextnode.poz = MainSquare[row][col].ParentPoz;
-    
-    do
-    {
-        Path.push(nextnode);
-        nextnode.poz = MainSquare[row][col].ParentPoz;
-        
-        row = nextnode.poz.y;
-        col = nextnode.poz.x;
-    }while(MainSquare[row][col].ParentPoz != nextnode.poz);
-    
-    Path.emplace(MainSquare[row][col]);
-    
-    while(!Path.empty())
-    {
-        Square p = Path.top();
-        Path.pop();
-        if(p.poz.y > 0 && p.poz.x > 0)
-            MainSquare[p.poz.y][p.poz.x].sqColor = Color::Green;
-    }
-}
+    int i = FinishSq -> poz.y;
+    int j = FinishSq -> poz.x;
+    stack<Square> path;
+    vector<Square> usablePath;
 
-bool AStar::finished(Square currentSq )
-{
-    if(currentSq . poz == FinishSq->poz)
-        return true;
-    else
-        return false;
+    while(MainSquare[i][j].ParentPoz != Vector2i(j,i) &&
+          MainSquare[i][j].poz != Vector2i(-1,-1))
+    {
+        path.push(MainSquare[i][j]);
+        int tempX = MainSquare[i][j].ParentPoz.x;
+        int tempY = MainSquare[i][j].ParentPoz.y;
+        i = tempY;
+        j = tempX;
+    }
+    path.push(MainSquare[i][j]);
+    while(!path.empty())
+    {
+        Square top = path.top();
+        MainSquare[top.poz.y][top.poz.x].sqColor = Color::Green;
+        path.pop();
+        usablePath.emplace_back(top);
+    }
 }
 
 bool AStar::isAvailable(Square testSq)
@@ -114,123 +103,100 @@ bool AStar::isSqValid(Square testSq )
         return false;
 }
 
-double AStar::ManhattenDistance(Square currentSq)
-{
-    double h = abs(currentSq . poz.x - FinishSq->poz.x) +
-    abs(currentSq . poz.y - FinishSq->poz.y);
-    return h;
-}
-
-double AStar::EUdistance(Square currentSq)
-{
-    int c1 = currentSq . poz.y - FinishSq->poz.y;
-    int c2 = currentSq . poz.x - FinishSq->poz.x;
-    double c3 = sqrt(c1*c1 + c2*c2);
-    return c3;
-}
-
-double AStar::DiagonalDistance(Square currentSq)
-{
-
-    double dx = abs(currentSq . poz.x - FinishSq->poz.x);
-    double dy = abs(currentSq . poz.y - FinishSq->poz.y);
-    double D = 1;
-    double D2 = sqrt(2);
-    double h = D * (dx + dy) + (D2 - 2 * D) * min(dx , dy);
-    
-    return h;
-}
-
 double AStar::herusitic(Square currentSq )
 {
     return sqrt(pow((StartSq -> poz.y - FinishSq -> poz.y), 2.0  ) + pow((StartSq -> poz.x - FinishSq -> poz.x) , 2.0));
-//    return EUdistance(currentSq );
 }
  
 void AStar::Alg(Square MainSquare[100][100])
 {
-        
-//    if(isSqValid(StartSq) == false)
-//    {
-//        cout << "Start Sq   " <<   StartSq -> poz.y << "   " << StartSq -> poz.x << endl;
-//        cout << " Source is invalid " << endl;
-//        return ;
-//    }
+    if(isDestionation(*StartSq))
+    {
+        cout << "you are at the destination" << endl;
+        return;
+    }
     
-    stack<Square> OpenList;
+    bool closedlist[101][101];
     
-    int i = StartSq->poz.y ;
-    int j = StartSq->poz.x ;
+    for(int i = 1 ; i<= MainMatrix -> Mat_I ; i++)
+        for(int j = 1 ; j<= MainMatrix -> Mat_J ;j++)
+            closedlist[i][j] = false;
+
+    int i = StartSq -> poz.y;
+    int j = StartSq -> poz.x;
+
+
+    MainSquare[i][j].ParentPoz = Vector2i(j , i);
     
-    bool ClosedList[MainMatrix -> Mat_I][MainMatrix -> Mat_J];
-    memset(ClosedList, false, sizeof(ClosedList));
+    vector<Square> openlist;
+    openlist.emplace_back(MainSquare[i][j]);
+    bool pathFound = false;
+    openlist.begin();
     
-    OpenList.emplace(*StartSq);
-        
-    while(!OpenList.empty())
+    while (!openlist.empty())
     {
         Square currentSq;
-        const Square& p = OpenList.top();
-        
-        currentSq.poz = p.poz;
-        i = p.poz.y;
-        j = p.poz.x;
-        OpenList.pop();
-        
-        ClosedList[i][j] = true;
-        
-//        if(isDestionation(p))
-//        {
-//            MainSquare[p.poz.y][p.poz.x].ParentPoz = p.poz;
-//            cout << "Early cheack destination cell has been found" << endl;
-//            return ;
-//         }
-//
-        //Check every neighbour
-        for(int addX = -1 ; addX <= 1 ; addX ++)
+        do
         {
-            for(int addY = -1 ; addY <= 1 ; addY++)
+            float temp = INFINITY;
+            vector<Square>::iterator itSquare;
+            vector<Square>::iterator it = openlist.begin();
+            for(it = openlist.begin() ; it != openlist.end() ; it = next(it))
             {
-                Square neighbour = MainSquare[i+addY][j+addX];
-                if(isSqValid(neighbour))
+                Square n = *it;
+                if(n.fCost < temp)
                 {
-//                    neighbour.poz = p.poz;
-//                    neighbour.hCost = herusitic(neighbour);
-//                    neighbour.gCost = neighbour.gCost + 1.0;
-//                    neighbour.fCost = neighbour.hCost + neighbour.gCost;
-                    
-                    if(isDestionation(neighbour))
+                    temp = n.fCost;
+                    itSquare = it;
+                }
+            }
+            currentSq = *itSquare;
+            openlist.erase(itSquare);
+            
+        }while(isSqValid(currentSq) == false);
+        
+        i = currentSq.poz.y;
+        j = currentSq.poz.x;
+        closedlist[i][j] = true;
+        
+        for(int addY = -1 ; addY <= 1 ; addY ++)
+        {
+            for(int addX = -1 ; addX <= 1 ; addX ++)
+            {
+                double gNew , fNew , hNew;
+                if(isSqValid(MainSquare[i+addY][j+addX] )&&
+                    isAvailable(MainSquare[i+addY][j+addX]))
+                {
+                    if(isDestionation(MainSquare[i+addY][j+addX]))
                     {
-                        MainSquare[neighbour.poz.y][neighbour.poz.x].ParentPoz = Vector2i(j , i);
-                        cout << "Destination cell has been found " << endl;
+                        MainSquare[i+addY][j+addX].ParentPoz = Vector2i(j , i);
+                        pathFound = true;
+                        cout << "PAth has been found " << endl;
                         return;
                     }
-                    else if(!ClosedList[neighbour.poz.y][neighbour.poz.x] &&
-                             isAvailable(neighbour))
+                    else if(closedlist[i + addY][j + addX] == false)
                     {
-                        double gNew , hNew , fNew;
-                        gNew = MainSquare[i][j].gCost + 1.0;
-                        hNew = herusitic(neighbour);
+                        gNew = currentSq.gCost + 1.0;
+                        hNew = herusitic(MainSquare[i+addY][i+addX]);
                         fNew = gNew + hNew;
-
-                        if(MainSquare[neighbour.poz.y][neighbour.poz.x].fCost ==  -1 ||
-                           MainSquare[neighbour.poz.y][neighbour.poz.x].fCost >fNew)
+                        
+                        if(MainSquare[i + addY][j + addX].fCost == INFINITY ||
+                           MainSquare[i + addY][j + addX].fCost > fNew)
                         {
-                            neighbour.fCost = fNew;
-                            OpenList.emplace(neighbour);
-
-                            MainSquare[neighbour.poz.y][neighbour.poz.x].gCost = gNew;
-                            MainSquare[neighbour.poz.y][neighbour.poz.x].hCost = hNew;
-                            MainSquare[neighbour.poz.y][neighbour.poz.x].fCost = fNew;
-                            MainSquare[neighbour.poz.y][neighbour.poz.x].ParentPoz = Vector2i(j,i);
+                            MainSquare[i + addY][j + addX].fCost = fNew;
+                            MainSquare[i + addY][j + addX].hCost = hNew;
+                            MainSquare[i + addY][j + addX].gCost = gNew;
+                            MainSquare[i + addY][j + addX].ParentPoz = Vector2i(j,i);
+                            
+                            openlist.emplace_back(MainSquare[i+addY][j+addX]);
                         }
                     }
                 }
             }
         }
     }
-    if(foundDest == false)
-        cout << "Could not find destination :( " << endl;
+    if(!pathFound)
+        cout << "Destination could not be found :(" << endl;
     return ;
         
 }

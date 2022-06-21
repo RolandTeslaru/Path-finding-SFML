@@ -10,8 +10,8 @@
 
 #include "GlobalLIbs.h"
 
-const static int WinX = 720;
-const static int WinY = 720;
+const static int WinX = 1080;
+const static int WinY = 1080;
 const static int TileSize = 10;
 
 const static int X_STEP = 30;
