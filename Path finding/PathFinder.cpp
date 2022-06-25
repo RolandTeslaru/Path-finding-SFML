@@ -4,13 +4,11 @@
 //
 //  Created by Roland Teslaru on 13.06.2022.
 //
-
 #include "PathFinder.hpp"
 #include "array"
 #include "queue"
 #include "vector"
 #include "stack"
-
 
 int CheckedprimalSq = 0;
 

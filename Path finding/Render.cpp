@@ -42,7 +42,6 @@ void initwindow()
        !Menlo.loadFromFile("Resources/Menlo-Regular.ttf"))
     {
         cout << "Error loading text font " << endl;
-        
         exit(EXIT_FAILURE);
     }
     
@@ -102,7 +101,6 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                                 MainSquare[i][j].sqColor = Color::Blue;
                                 MainMatrix -> Mat[i][j] = 2;
                                 MainSquare[i][j].id = 2;
-                                
                             }
                             //------ Select Finishing Sqaure
                             else if(PointA.poz != Vector2i(-1 , -1) &&
@@ -139,7 +137,6 @@ void render(Square MainSquare[][100] , Matrix *MainMatrix)
                         //------ Auto highlight square that overlaps with mouse
                         if(MainMatrix -> Mat[i][j] == 0)
                             MainSquare[i][j].sqColor = Color(199 , 200 , 200);
-                        
                     }
                 }
                 

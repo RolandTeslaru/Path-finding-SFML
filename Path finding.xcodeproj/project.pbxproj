@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		74281CA228569D2D00DBCEFF /* Update.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74281CA028569D2D00DBCEFF /* Update.cpp */; };
 		74281CA52857512B00DBCEFF /* PathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 74281CA32857512A00DBCEFF /* PathFinder.cpp */; };
 		744E3635284CB07100BE3A7A /* libsfml-audio.2.5.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 744E3630284CB07100BE3A7A /* libsfml-audio.2.5.1.dylib */; };
 		744E3636284CB07100BE3A7A /* libsfml-network.2.5.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 744E3631284CB07100BE3A7A /* libsfml-network.2.5.1.dylib */; };
@@ -33,8 +32,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		74281CA028569D2D00DBCEFF /* Update.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Update.cpp; sourceTree = "<group>"; };
-		74281CA128569D2D00DBCEFF /* Update.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Update.hpp; sourceTree = "<group>"; };
 		74281CA32857512A00DBCEFF /* PathFinder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PathFinder.cpp; sourceTree = "<group>"; };
 		74281CA42857512A00DBCEFF /* PathFinder.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PathFinder.hpp; sourceTree = "<group>"; };
 		744E362F284CADA700BE3A7A /* GlobalValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalValue.h; sourceTree = "<group>"; };
@@ -98,14 +95,12 @@
 				74736B3D284A870500554E46 /* main.cpp */,
 				7493137C284CACF90019F017 /* Render.cpp */,
 				74A4799A284CB1CF001CC530 /* Matrix.cpp */,
-				74281CA028569D2D00DBCEFF /* Update.cpp */,
 				74281CA32857512A00DBCEFF /* PathFinder.cpp */,
 				74281CA42857512A00DBCEFF /* PathFinder.hpp */,
 				7493137F284CAD110019F017 /* Path.cpp */,
 				74A4799B284CB1CF001CC530 /* Matrix.hpp */,
 				7493137D284CACF90019F017 /* Render.hpp */,
 				744E362F284CADA700BE3A7A /* GlobalValue.h */,
-				74281CA128569D2D00DBCEFF /* Update.hpp */,
 				74931380284CAD110019F017 /* Path.hpp */,
 				74931382284CAD240019F017 /* GlobalLIbs.h */,
 			);
@@ -188,7 +183,6 @@
 			files = (
 				74A4799C284CB1CF001CC530 /* Matrix.cpp in Sources */,
 				74931381284CAD110019F017 /* Path.cpp in Sources */,
-				74281CA228569D2D00DBCEFF /* Update.cpp in Sources */,
 				74736B3E284A870500554E46 /* main.cpp in Sources */,
 				74281CA52857512B00DBCEFF /* PathFinder.cpp in Sources */,
 				7493137E284CACF90019F017 /* Render.cpp in Sources */,
